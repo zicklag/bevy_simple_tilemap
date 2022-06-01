@@ -3,7 +3,7 @@ use bevy::{
     math::{IVec2, IVec3, Mat4, Vec2},
     prelude::{AssetEvent, Color, Component, Entity, GlobalTransform, Handle, HandleUntyped, Image, Shader},
     reflect::TypeUuid,
-    render::render_resource::{std140::AsStd140, BindGroup, BufferUsages, BufferVec, DynamicUniformVec},
+    render::render_resource::{BindGroup, BufferUsages, BufferVec, DynamicUniformBuffer, ShaderType},
     sprite::Rect,
     utils::{HashMap, Instant},
 };
@@ -60,14 +60,14 @@ struct TilemapVertex {
 }
 
 #[repr(C)]
-#[derive(Copy, Clone, Default, Pod, Zeroable, AsStd140)]
+#[derive(Copy, Clone, Default, Pod, Zeroable, ShaderType)]
 pub struct TilemapGpuData {
     pub transform: Mat4,
 }
 
 pub struct ChunkMeta {
     vertices: BufferVec<TilemapVertex>,
-    tilemap_gpu_data: DynamicUniformVec<TilemapGpuData>,
+    tilemap_gpu_data: DynamicUniformBuffer<TilemapGpuData>,
     tilemap_gpu_data_bind_group: Option<BindGroup>,
 }
 
@@ -75,7 +75,7 @@ impl Default for ChunkMeta {
     fn default() -> Self {
         Self {
             vertices: BufferVec::new(BufferUsages::VERTEX),
-            tilemap_gpu_data: DynamicUniformVec::default(),
+            tilemap_gpu_data: DynamicUniformBuffer::default(),
             tilemap_gpu_data_bind_group: None,
         }
     }
